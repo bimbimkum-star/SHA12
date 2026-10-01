@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ऑडियो खाताबुक प्रो - Safegate Edition</title>
+  
+  <meta name="theme-color" content="#0b0f19">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <!-- CSS फाइल लिंक -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ========================================== -->
+  <!-- SAFEGATE PIN LOCK SCREEN (नो हैक सुरक्षा शील्ड) -->
+  <!-- ========================================== -->
+  <div id="safegateShield" class="safegate-screen">
+    <div class="safegate-box">
+      <div class="shield-icon">🛡️</div>
+      <h2 id="safegateTitle">Safegate सुरक्षा लॉक</h2>
+      <p id="safegateDesc">कृपया अपना 4-अंकों का गुप्त पिन दर्ज करें</p>
+      
+      <div class="pin-dots" id="pinDots">
+        <span class="dot"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+      </div>
+
+      <div class="keypad">
+        <button class="key" onclick="pressPin('1')">1</button>
+        <button class="key" onclick="pressPin('2')">2</button>
+        <button class="key" onclick="pressPin('3')">3</button>
+        <button class="key" onclick="pressPin('4')">4</button>
+        <button class="key" onclick="pressPin('5')">5</button>
+        <button class="key" onclick="pressPin('6')">6</button>
+        <button class="key" onclick="pressPin('7')">7</button>
+        <button class="key" onclick="pressPin('8')">8</button>
+        <button class="key" onclick="pressPin('9')">9</button>
+        <button class="key btn-reset" onclick="clearPin()">C</button>
+        <button class="key" onclick="pressPin('0')">0</button>
+        <button class="key btn-enter" onclick="submitPin()">🔓</button>
+      </div>
+      <p id="pinErrorMsg" class="pin-error"></p>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- मुख्य खाताबुक एप्लिकेशन इंटरफेस -->
+  <!-- ========================================== -->
+  <div class="container no-print" id="mainApp" style="display:none;">
+    
+    <!-- हेडर पट्टी -->
+    <header>
+      <div class="shop-title-wrap">
+        <h1 id="shopHeaderTitle">🎙️ ऑडियो खाताबुक प्रो</h1>
+        <p class="shop-subtitle" id="shopHeaderSubtitle">IndexedDB No-Crash शील्ड सक्रिय है</p>
+      </div>
+      <div class="header-btns">
+        <button class="btn btn-gray" onclick="lockAppNow()">🔒 लॉक करें</button>
+        <button class="btn btn-gray" onclick="openSettingsModal()">⚙️ सेटिंग्स</button>
+        <button class="btn btn-gray" onclick="exportDataCSV()">📥 CSV</button>
+        <button class="btn btn-purple" onclick="backupJSON()">💾 सेफ बैकअप</button>
+        <button class="btn btn-gray" onclick="document.getElementById('restoreFile').click()">📤 रीस्टोर</button>
+        <input type="file" id="restoreFile" style="display:none" onchange="restoreJSON(event)" accept=".json">
+        <button class="btn btn-blue" onclick="openPrintModal()">🖨️ प्रिंट लेज़र</button>
+      </div>
+    </header>
+
+    <!-- समरी ग्रिड -->
+    <div class="summary-grid">
+      <div class="card in">
+        <span>कुल मिला (जमा)</span>
+        <h2 id="sumIn">₹0</h2>
+      </div>
+      <div class="card out">
+        <span>कुल दिया (उधार)</span>
+        <h2 id="sumOut">₹0</h2>
+      </div>
+      <div class="card balance">
+        <span>शुद्ध बैलेंस (Net)</span>
+        <h2 id="sumBalance">₹0</h2>
+      </div>
+    </div>
+
+    <!-- वॉयस कमांड कंसोल -->
+    <div class="voice-box">
+      <div class="soundwave" id="soundwave">
+        <span></span><span></span><span></span><span></span><span></span>
+      </div>
+      <button id="micBtn" class="mic-btn" onclick="toggleVoice()">
+        <span id="micIcon">🎤</span>
+        <span id="micText">बोलने के लिए माइक दबाएं</span>
+      </button>
+      <div class="voice-status" id="voiceStatus">आवाज़ से एंट्री के लिए माइक दबाएं...</div>
+      <div class="voice-tags">
+        <span>"मुकेश को 2000 दिए"</span>
+        <span>"सुरेश से 500 मिले"</span>
+        <span>"मुकेश का बकाया कितना है?"</span>
+      </div>
+    </div>
+
+    <!-- मैन्युअल प्रविष्टि फॉर्म -->
+    <div class="form-box">
+      <h3 style="font-size:15px; margin-bottom:6px;">खाते में नई एंट्री जोड़ें</h3>
+      <form id="khataForm" class="entry-form" onsubmit="handleFormSubmit(event)">
+        <div class="form-group">
+          <label>ग्राहक का नाम</label>
+          <input type="text" id="custName" placeholder="नाम लिखें" required autocomplete="off">
+        </div>
+        <div class="form-group">
+          <label>राशि (₹)</label>
+          <input type="number" id="custAmount" placeholder="रुपये" min="1" step="any" required>
+        </div>
+        <div class="form-group">
+          <label>प्रकार</label>
+          <select id="custType">
+            <option value="IN">मिला / जमा (IN)</option>
+            <option value="OUT">दिया / उधार (OUT)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>दिनांक व समय</label>
+          <input type="datetime-local" id="custDateTime" required>
+        </div>
+        <div class="form-group">
+          <button type="submit" class="btn btn-green" style="width:100%; height:40px; justify-content:center;">➕ सुरक्षित सेव करें</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- लेज़र टेबल और सर्च -->
+    <div class="table-box">
+      <div class="table-top">
+        <input type="text" id="searchBar" placeholder="ग्राहक का नाम खोजें..." oninput="renderTable()" style="max-width:240px;">
+        <select id="filterType" onchange="renderTable()" style="max-width:180px;">
+          <option value="ALL">सभी लेन-देन</option>
+          <option value="IN">केवल जमा (IN)</option>
+          <option value="OUT">केवल उधार (OUT)</option>
+        </select>
+      </div>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>तारीख और समय</th>
+              <th>ग्राहक</th>
+              <th>प्रकार</th>
+              <th>राशि</th>
+              <th style="text-align:right;">एक्शन</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody">
+            <!-- IndexedDB से डेटा लोड होगा -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- मोडल 1: एडिट एंट्री -->
+  <div class="modal" id="editModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>लेन-देन एडिट करें</h3>
+        <span onclick="closeEditModal()">&times;</span>
+      </div>
+      <form onsubmit="handleEditSubmit(event)">
+        <input type="hidden" id="editId">
+        <div class="form-group">
+          <label>ग्राहक का नाम</label>
+          <input type="text" id="editName" required>
+        </div>
+        <div class="form-group">
+          <label>राशि (₹)</label>
+          <input type="number" id="editAmount" min="1" step="any" required>
+        </div>
+        <div class="form-group">
+          <label>प्रकार</label>
+          <select id="editType">
+            <option value="IN">मिला / जमा (IN)</option>
+            <option value="OUT">दिया / उधार (OUT)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>तारीख और समय</label>
+          <input type="datetime-local" id="editDateTime" required>
+        </div>
+        <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:10px;">
+          <button type="button" class="btn btn-gray" onclick="closeEditModal()">रद्द करें</button>
+          <button type="submit" class="btn btn-blue">अपडेट करें</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- मोडल 2: सेटिंग्स व पिन चेंज -->
+  <div class="modal" id="settingsModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>दुकान व Safegate सेटिंग्स</h3>
+        <span onclick="closeSettingsModal()">&times;</span>
+      </div>
+      <div class="form-group">
+        <label>दुकान का नाम</label>
+        <input type="text" id="settingShopName">
+      </div>
+      <div class="form-group">
+        <label>मोबाइल नंबर</label>
+        <input type="text" id="settingShopPhone">
+      </div>
+      <div class="form-group">
+        <label>UPI ID (पेमेंट के लिए)</label>
+        <input type="text" id="settingShopUpi">
+      </div>
+      <div class="form-group">
+        <label>Safegate पिन बदलें (4 अंक)</label>
+        <input type="password" id="settingShopPin" maxlength="4" placeholder="नया 4 अंकों का पिन">
+      </div>
+      <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:10px;">
+        <button class="btn btn-blue" onclick="saveSettings()">सेव करें</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- मोडल 3: UPI QR कोड -->
+  <div class="modal" id="upiModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>UPI पेमेंट QR कोड</h3>
+        <span onclick="closeUpiModal()">&times;</span>
+      </div>
+      <div class="upi-qr-card" id="upiCardContent"></div>
+    </div>
+  </div>
+
+  <!-- मोडल 4: प्रिंट सेटअप -->
+  <div class="modal" id="printModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>प्रिंट सेटअप विकल्प</h3>
+        <span onclick="closePrintModal()">&times;</span>
+      </div>
+      <div class="form-group">
+        <label>ग्राहक का चुनाव करें:</label>
+        <select id="printCustomerSelect">
+          <option value="ALL">-- समस्त ग्राहक (Full Ledger) --</option>
+        </select>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:8px; margin-top:8px;">
+        <button class="btn btn-blue" onclick="runPrint('A4')">📄 A4 लेज़र स्टेटमेंट प्रिंट</button>
+        <button class="btn btn-gray" onclick="runPrint('ROLL')">🧾 80mm रोल स्लिप प्रिंट</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- प्रिंट लेयर -->
+  <div id="printOutput"></div>
+
+  <!-- जावास्क्रिप्ट फाइल लिंक -->
+  <script src="script.js"></script>
+</body>
+</html>
