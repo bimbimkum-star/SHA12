@@ -1,0 +1,413 @@
+:root {
+  --bg-body: #0b0f19;
+  --bg-card: #151d30;
+  --bg-input: #0c1222;
+  --border: #24304f;
+  --text: #f8fafc;
+  --text-muted: #94a3b8;
+  --green: #10b981;
+  --green-bg: rgba(16, 185, 129, 0.12);
+  --red: #f43f5e;
+  --red-bg: rgba(244, 63, 94, 0.12);
+  --blue: #3b82f6;
+  --purple: #8b5cf6;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+body {
+  background-color: var(--bg-body);
+  color: var(--text);
+  padding: 16px;
+  display: flex;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+.container {
+  width: 100%;
+  max-width: 980px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ========================================= */
+/* SAFEGATE PIN LOCK SCREEN STYLING          */
+/* ========================================= */
+.safegate-screen {
+  position: fixed;
+  inset: 0;
+  background: var(--bg-body);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.safegate-box {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 28px 24px;
+  width: 100%;
+  max-width: 340px;
+  text-align: center;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+}
+
+.shield-icon {
+  font-size: 38px;
+  margin-bottom: 8px;
+}
+
+.safegate-box h2 {
+  font-size: 20px;
+  margin-bottom: 4px;
+}
+
+.safegate-box p {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 18px;
+}
+
+.pin-dots {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 22px;
+}
+
+.pin-dots .dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  background: transparent;
+  transition: all 0.2s;
+}
+
+.pin-dots .dot.filled {
+  background: var(--blue);
+  border-color: var(--blue);
+}
+
+.keypad {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.keypad .key {
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  color: #fff;
+  font-size: 20px;
+  font-weight: bold;
+  height: 54px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.keypad .key:active {
+  background: var(--border);
+}
+
+.keypad .btn-reset { color: var(--red); font-size: 16px; }
+.keypad .btn-enter { color: var(--green); font-size: 18px; }
+
+.pin-error {
+  color: var(--red);
+  font-size: 12px;
+  margin-top: 12px;
+  min-height: 16px;
+}
+
+/* ऐप हेडर */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 14px;
+}
+
+.shop-title-wrap h1 {
+  font-size: 22px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.shop-subtitle {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.header-btns {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* बटन स्टाइल्स */
+.btn {
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+.btn:hover { opacity: 0.9; }
+.btn-blue { background: var(--blue); color: #fff; }
+.btn-green { background: var(--green); color: #022c22; }
+.btn-gray { background: var(--bg-card); color: var(--text); border: 1px solid var(--border); }
+.btn-purple { background: var(--purple); color: #fff; }
+
+/* समरी कार्ड्स */
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  padding: 16px;
+  border-radius: 12px;
+}
+.card span { font-size: 12px; color: var(--text-muted); font-weight: bold; text-transform: uppercase; }
+.card h2 { font-size: 24px; margin-top: 6px; font-weight: 700; }
+.card.in h2 { color: var(--green); }
+.card.out h2 { color: var(--red); }
+.card.balance h2 { color: var(--blue); }
+
+/* वॉयस कंसोल */
+.voice-box {
+  background: linear-gradient(180deg, var(--bg-card) 0%, rgba(21, 29, 48, 0.6) 100%);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 20px;
+  text-align: center;
+}
+
+.soundwave {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  height: 30px;
+  margin-bottom: 12px;
+  opacity: 0.2;
+}
+.soundwave.active { opacity: 1; }
+.soundwave span {
+  width: 4px;
+  height: 8px;
+  background: var(--blue);
+  border-radius: 4px;
+}
+.soundwave.active span {
+  animation: wave 1s infinite ease-in-out;
+}
+.soundwave.active span:nth-child(1) { animation-delay: 0.1s; }
+.soundwave.active span:nth-child(2) { animation-delay: 0.3s; }
+.soundwave.active span:nth-child(3) { animation-delay: 0.2s; }
+.soundwave.active span:nth-child(4) { animation-delay: 0.4s; }
+.soundwave.active span:nth-child(5) { animation-delay: 0.15s; }
+
+@keyframes wave {
+  0%, 100% { height: 6px; }
+  50% { height: 26px; background: var(--green); }
+}
+
+.mic-btn {
+  background: var(--bg-input);
+  border: 2px solid var(--border);
+  color: #fff;
+  padding: 12px 28px;
+  border-radius: 40px;
+  font-size: 15px;
+  font-weight: bold;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.3s;
+}
+.mic-btn.active {
+  border-color: var(--red);
+  background: var(--red-bg);
+  animation: pulse 1.2s infinite;
+}
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.04); }
+  100% { transform: scale(1); }
+}
+
+.voice-status {
+  margin-top: 10px;
+  font-size: 13px;
+  color: var(--text-muted);
+  min-height: 20px;
+}
+
+.voice-tags {
+  margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+  font-size: 11px;
+}
+.voice-tags span {
+  background: var(--bg-input);
+  padding: 4px 8px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  color: #cbd5e1;
+}
+
+/* फॉर्म्स और टेबल */
+.form-box, .table-box {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 18px;
+}
+
+.entry-form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 10px;
+  align-items: flex-end;
+  margin-top: 10px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.form-group label { font-size: 12px; color: var(--text-muted); }
+
+input, select {
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  color: #fff;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 14px;
+  outline: none;
+  width: 100%;
+}
+input:focus, select:focus { border-color: var(--blue); }
+
+.table-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+
+.table-wrapper { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; text-align: left; }
+th, td { padding: 12px 10px; border-bottom: 1px solid var(--border); font-size: 13px; }
+th { color: var(--text-muted); font-size: 11px; text-transform: uppercase; }
+
+.tag-in { color: var(--green); font-weight: bold; }
+.tag-out { color: var(--red); font-weight: bold; }
+
+.actions-wrap { display: flex; gap: 4px; justify-content: flex-end; flex-wrap: wrap; }
+.btn-action {
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  color: #fff;
+  padding: 5px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  cursor: pointer;
+}
+.btn-action:hover { background: #1e293b; }
+.btn-wa:hover { border-color: #25d366; color: #25d366; }
+.btn-upi:hover { border-color: var(--purple); color: var(--purple); }
+
+/* मोडल्स */
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.8);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+.modal.show { display: flex; }
+.modal-content {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  width: 100%;
+  max-width: 440px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 8px;
+}
+.modal-header span { cursor: pointer; font-size: 20px; color: var(--text-muted); }
+
+.upi-qr-card {
+  text-align: center;
+  padding: 10px;
+  background: #fff;
+  border-radius: 10px;
+  color: #000;
+  margin-top: 10px;
+}
+.upi-qr-card img { max-width: 180px; height: 180px; margin: 10px auto; display: block; }
+
+/* प्रिंट शैलियाँ */
+#printOutput { display: none; }
+
+@media print {
+  body { background: #fff !important; color: #000 !important; padding: 0 !important; }
+  .no-print { display: none !important; }
+  #printOutput { display: block !important; }
+
+  body.mode-a4 { margin: 15mm; }
+  body.mode-a4 table { width: 100%; border-collapse: collapse; margin-top: 14px; }
+  body.mode-a4 th, body.mode-a4 td { border: 1px solid #999; padding: 8px; font-size: 12px; color: #000; }
+  body.mode-a4 th { background: #f0f0f0; }
+
+  body.mode-roll { width: 76mm !important; margin: 0 auto !important; font-family: monospace, sans-serif !important; }
+  body.mode-roll .thermal-box { width: 100%; font-size: 11px; padding: 4px; }
+  body.mode-roll table { width: 100%; border-collapse: collapse; margin-top: 6px; }
+  body.mode-roll th, body.mode-roll td { border-bottom: 1px dashed #000; padding: 4px 0; font-size: 10px; color: #000; }
+  body.mode-roll .center { text-align: center; }
+}
